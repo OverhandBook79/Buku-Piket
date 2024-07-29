@@ -5,30 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buku Piket</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
     <div class="container">
         <h1>Buku Piket</h1>
-        <div class="table-container">
+        <div class="table-wrapper">
             <table id="scheduleTable">
                 <thead>
                     <tr>
-                        <th>Senin</th>
-                        <th>Selasa</th>
-                        <th>Rabu</th>
-                        <th>Kamis</th>
-                        <th>Jumat</th>
+                        <th>Week</th>
+                        <th>Monday</th>
+                        <th>Tuesday</th>
+                        <th>Wednesday</th>
+                        <th>Thursday</th>
+                        <th>Friday</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
         </div>
-        <div class="button-group">
-            <button onclick="exportData()">Export Data</button>
+                <div class="controls">
+            <label for="startWeek">Start Week:</label>
+            <input type="number" id="startWeek" min="1" max="44" value="1">
+            <label for="endWeek">End Week:</label>
+            <input type="number" id="endWeek" min="1" max="44" value="1">
+            <button onclick="exportTasks()">Export to XLSX</button>
         </div>
-        <h4>By : Overhandbook79</h4>
     </div>
+    <footer>
+        <h5>Buku Piket©</h5>
+        <h6>By : OverhandBook79</h6>
+        <a href="https://github.com/OverhandBook79" target="_blank">
+            <img src="github-logo.png" alt="GitHub" class="footer-icon">
+        </a>
+        <a href="https://youtube.com/overhandbook79" target="_blank">
+            <img src="youtube-logo.png" alt="YouTube" class="footer-icon">
+        </a>
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
