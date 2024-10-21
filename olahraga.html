@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>6-Month Exercise Calendar</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    .exercise-container {
+      margin-top: 30px;
+    }
+    .exercise-container p {
+      font-size: 1.5em;
+    }
+    .complete-btn {
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .notification {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      display: none;
+    }
+    #printBtn {
+      margin-top: 30px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #printBtn:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+    #countdown {
+      margin-top: 20px;
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>6-Month Exercise Calendar</h1>
+  <div class="exercise-container">
+    <h2 id="dayTitle">Day Exercise</h2>
+    <p id="exerciseText">Click on the button to mark the exercise for today.</p>
+    <button id="completeButton" class="complete-btn">Mark as Completed</button>
+    <div id="notification" class="notification">Exercise marked as completed!</div>
+    <div id="countdown"></div>
+  </div>
+  
+  <button id="printBtn" disabled>Print Marked Scores</button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+  <script>
+    const daysInCalendar = 180; // Total days in the calendar
+    let currentDayIndex = 0; // Track the current day index
+    const exerciseList = [
+  "10 push-ups", "15 squats", "20 sit-ups", "30 jumping jacks", "15 glute bridges", 
+  "20-second plank", "15 calf raises", "20 lunges (alternating legs)", "20 high knees", 
+  "15 crunches", "Rest day", "10 tricep dips (use chair)", "15 wall push-ups", 
+  "20 butt kicks", "30-second wall sit", "10 leg raises", "1-minute march in place", 
+  "20 arm circles", "15 side leg lifts (each leg)", "20 toe touches", "Rest day", 
+  "15 incline push-ups (use bed or table)", "20 chair squats", "10 side planks (each side)", 
+  "1-minute fast feet", "15 reverse lunges (alternating legs)", "20 standing calf raises", 
+  "15 shoulder taps", "30-second knee-high march", "20 heel taps (lie down)", "Rest day", 
+  "10 push-ups", "20 sit-ups", "15 glute bridges", "20-second plank", "10 leg raises", 
+  "1-minute wall sit", "15 chair dips", "20 high knees", "15 side leg lifts (each leg)", 
+  "Rest day", "10 incline push-ups", "30 jumping jacks", "15 reverse lunges", 
+  "20 butt kicks", "20 arm circles", "15 shoulder taps", "15 squats", "30-second plank", 
+  "Rest day", "10 tricep dips", "15 crunches", "20 toe touches", "20-second side plank (each side)", 
+  "15 wall push-ups", "20 high knees", "1-minute march in place", "10 lunges (alternating legs)", 
+  "Rest day", "15 push-ups", "15 glute bridges", "30-second wall sit", "10 leg raises", 
+  "15 squats", "20 butt kicks", "15 shoulder taps", "30 jumping jacks", "20-second plank", 
+  "Rest day", "20 arm circles", "15 crunches", "10 side planks", "20 lunges (alternating legs)", 
+  "15 reverse lunges", "20 heel taps", "1-minute march in place", "15 calf raises", 
+  "Rest day", "10 incline push-ups", "20 high knees", "15 chair dips", "30-second plank", 
+  "15 squats", "20 arm circles", "20 toe touches", "10 leg raises", "20-second wall sit", 
+  "Rest day", "10 tricep dips", "15 shoulder taps", "15 side leg lifts (each leg)", 
+  "15 push-ups", "20 butt kicks", "30 jumping jacks", "20 lunges (alternating legs)", 
+  "Rest day", "15 squats", "15 reverse lunges", "1-minute march in place", "10 leg raises", 
+  "20-second side plank (each side)", "20 arm circles", "15 glute bridges", "Rest day", 
+  "10 push-ups", "30-second wall sit", "15 calf raises", "15 crunches", "20 heel taps", 
+  "10 chair dips", "20 butt kicks", "30-second plank", "15 side leg lifts (each leg)", 
+  "Rest day", "10 incline push-ups", "15 shoulder taps", "20 high knees", 
+  "1-minute march in place", "15 squats", "20 lunges (alternating legs)", "20 toe touches", 
+  "Rest day", "20 arm circles", "15 glute bridges", "10 leg raises", "30-second plank", 
+  "15 reverse lunges", "15 push-ups", "20-second wall sit", "20 heel taps", "Rest day", 
+  "15 squats", "20 high knees", "30 jumping jacks", "15 side leg lifts (each leg)", 
+  "10 tricep dips", "15 chair squats", "20 lunges (alternating legs)", "Rest day", 
+  "1-minute march in place", "15 glute bridges", "20 butt kicks", "20 arm circles", 
+  "15 squats", "10 push-ups", "30-second wall sit", "Rest day", "10 leg raises", 
+  "15 reverse lunges", "20-second side plank (each side)", "15 shoulder taps", "20 heel taps", 
+  "Rest day", "20 high knees", "30 jumping jacks", "20 lunges (alternating legs)", 
+  "15 crunches", "15 push-ups", "10 tricep dips", "1-minute march in place", "Rest day", 
+  "15 side leg lifts (each leg)", "20 butt kicks", "20 arm circles", "30-second plank", 
+  "15 chair squats", "20 toe touches", "15 glute bridges", "Rest day", "10 push-ups", 
+  "30 jumping jacks", "15 reverse lunges", "10 leg raises", "30-second wall sit", 
+  "20 high knees", "15 squats", "20 heel taps", "Rest day"
+];
+    let storedData = JSON.parse(localStorage.getItem('exerciseData')) || {};
+
+    function saveToLocalStorage() {
+      localStorage.setItem('exerciseData', JSON.stringify(storedData));
+    }
+
+    function displayCurrentDay() {
+      const today = new Date();
+      currentDayIndex = Math.floor((today - new Date(today.getFullYear(), today.getMonth(), today.getDate())) / (1000 * 60 * 60 * 24));
+      currentDayIndex = Math.max(0, Math.min(daysInCalendar - 1, currentDayIndex));
+
+      const dayKey = 'day-' + (currentDayIndex + 1);
+      const exerciseTextEl = document.getElementById('exerciseText');
+      const dayTitleEl = document.getElementById('dayTitle');
+      const completeButton = document.getElementById('completeButton');
+      const notification = document.getElementById('notification');
+
+      dayTitleEl.textContent = 'Day ' + (currentDayIndex + 1) + ' Exercise';
+      exerciseTextEl.textContent = exerciseList[currentDayIndex];
+
+      // Check if the exercise has been completed
+      if (storedData[dayKey] && storedData[dayKey].completed) {
+        completeButton.textContent = 'Completed';
+        completeButton.disabled = true; // Disable button if already completed
+      } else {
+        completeButton.textContent = 'Mark as Completed';
+        completeButton.disabled = false; // Enable button if not completed
+      }
+
+      completeButton.onclick = () => {
+        if (!storedData[dayKey]) {
+          storedData[dayKey] = { completed: false };
+        }
+        storedData[dayKey].completed = true; // Mark as completed
+        saveToLocalStorage();
+        completeButton.disabled = true; // Disable button after marking
+        notification.style.display = 'block'; // Show notification
+        setTimeout(() => notification.style.display = 'none', 2000); // Hide notification after 2 seconds
+        document.getElementById('printBtn').disabled = false; // Enable print button
+      };
+    }
+
+    // Function to print marked scores as an Excel file
+    function printMarkedScores() {
+      const workbook = XLSX.utils.book_new();
+      const worksheetData = [['Day', 'Exercise', 'Status']];
+      
+      for (let i = 0; i < daysInCalendar; i++) {
+        const dayKey = 'day-' + (i + 1);
+        if (storedData[dayKey] && storedData[dayKey].completed) {
+          worksheetData.push([i + 1, exerciseList[i], 'Completed']);
+        }
+      }
+
+      const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Exercises');
+
+      // Create the file and trigger download
+      XLSX.writeFile(workbook, 'marked_exercises.xlsx');
+    }
+
+    document.getElementById('printBtn').addEventListener('click', printMarkedScores);
+
+    // Countdown function to show time remaining until the next day
+    function startCountdown() {
+      const now = new Date();
+      const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+      const timeUntilNextDay = nextDay - now;
+
+      const countdownElement = document.getElementById('countdown');
+      const updateCountdown = () => {
+        const hours = Math.floor((timeUntilNextDay % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeUntilNextDay % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeUntilNextDay % (1000 * 60)) / 1000);
+
+        countdownElement.textContent = `Time until next day: ${hours}h ${minutes}m ${seconds}s`;
+      };
+
+      updateCountdown();
+      setInterval(() => {
+        timeUntilNextDay -= 1000;
+        updateCountdown();
+      }, 1000);
+    }
+
+    // Call the function to display the current day's exercise and start the countdown
+    displayCurrentDay();
+    startCountdown();
+  </script>
+</body>
+</html>
