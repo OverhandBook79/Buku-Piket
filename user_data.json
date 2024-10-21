@@ -1,0 +1,23 @@
+{
+    "name": "Ahmad Raghib Zahron",
+    "age": 17,
+    "background": "Born in Bekasi, 26 June 2007",
+    "location": "Bekasi, Indonesia",
+    "school": "SMAN 12 Kota Bekasi",
+    "history": "Ahmad is currently a student focused on excelling in academics.",
+    "achievements": [
+        {
+            "title": "Completed Web Development Bootcamp",
+            "image": "https://via.placeholder.com/30"
+        },
+        {
+            "title": "Participated in Local Science Fair",
+            "image": "https://via.placeholder.com/30"
+        },
+        {
+            "title": "Achieved High Honor Roll",
+            "image": "https://via.placeholder.com/30"
+        }
+    ],
+    "profileImage": "https://via.placeholder.com/150"
+}
